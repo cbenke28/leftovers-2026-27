@@ -12,12 +12,14 @@ import static com.pedropathing.api.Paths.line;
 @Autonomous(name = "basicauton", group = "LinearOpMode")
 public class basicauton extends LinearOpMode {
 
-    private final Pose start = new Pose(56, 8, Math.toRadians(90));
-    private final Pose point1 = new Pose(56, 39, Math.toRadians(90));
-    private final Pose point2 = new Pose(27, 39, Math.toRadians(-180));
-    private final Pose point3 = new Pose(84, 39, Math.toRadians(0));
-    private final Pose point4 = new Pose(56, 39, Math.toRadians(-180));
-    private final Pose point5 = new Pose(56, 8, Math.toRadians(-90));
+    Follower follower;
+
+    private final Pose start = new Pose(0, 0, Math.toRadians(0));
+    private final Pose point1 = new Pose(0, 30, Math.toRadians(0));
+    private final Pose point2 = new Pose(-20, 30, Math.toRadians(0));
+    private final Pose point3 = new Pose(20, 30, Math.toRadians(0));
+    private final Pose point4 = new Pose(0, 30, Math.toRadians(0));
+    private final Pose point5 = new Pose(0, 0, Math.toRadians(0));
 
     private Path path1;
     private Path path2;
@@ -36,7 +38,7 @@ public class basicauton extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Follower follower = Constants.create(hardwareMap);
+        follower = Constants.create(hardwareMap);
         follower.setPose(start);
         buildPaths();
 
