@@ -15,18 +15,18 @@ public class BasicTeleop extends LinearOpMode {
         DcMotor rightFront = hardwareMap.get(DcMotor.class, "rightFront");
         DcMotor leftBack = hardwareMap.get(DcMotor.class, "leftBack");
         DcMotor rightBack = hardwareMap.get(DcMotor.class, "rightBack");
-        DcMotor intake = hardwareMap.get(DcMotor.class, "intake");
+       // DcMotor intake = hardwareMap.get(DcMotor.class, "intake");
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        //intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        waitForStart(); // Wait for the driver to press PLAY
+        waitForStart();
 
 
         while (opModeIsActive()) {
@@ -48,8 +48,8 @@ public class BasicTeleop extends LinearOpMode {
             rightFront.setPower(frontRightPower);
             rightBack.setPower(backRightPower);
 
-            if (gamepad1.a) {intake.setPower(1);}
-            else {intake.setPower(0);}
+            //if (gamepad1.a) {intake.setPower(1);}
+            //else {intake.setPower(0);}
 
 
             telemetry.addData("Status", "Running");
