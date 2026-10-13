@@ -12,7 +12,7 @@ import static com.pedropathing.api.Paths.line;
 @Autonomous(name = "basicauton", group = "LinearOpMode")
 public class basicauton extends LinearOpMode {
 
-    Follower follower;
+    protected Follower follower;
 
     private final Pose start = new Pose(0, 0, Math.toRadians(0));
     private final Pose point1 = new Pose(0, 30, Math.toRadians(0));
