@@ -1,3 +1,16 @@
+//
+//                    boys this shit
+//
+//        ░██████╗██╗░░░██╗░█████╗░██╗░░██╗░██████╗
+//        ██╔════╝██║░░░██║██╔══██╗██║░██╔╝██╔════╝
+//        ╚█████╗░██║░░░██║██║░░╚═╝█████═╝░╚█████╗░
+//        ░╚═══██╗██║░░░██║██║░░██╗██╔═██╗░░╚═══██╗
+//        ██████╔╝╚██████╔╝╚█████╔╝██║░╚██╗██████╔╝
+//        ╚═════╝░░╚═════╝░░╚════╝░╚═╝░░╚═╝╚═════╝░
+//
+//
+
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -5,12 +18,14 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 import java.util.List;
 
+@Disabled
 @Autonomous(name = "limelightTest", group = "Autonomous")
 public class limelightTest extends basicauton {
 

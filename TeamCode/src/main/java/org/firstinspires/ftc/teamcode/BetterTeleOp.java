@@ -18,7 +18,7 @@ public class BetterTeleOp extends OpMode {
     private Follower follower;
     private DcMotor intake;
 
-    private Limelight3A limelight;
+
 
     @Override
     public void init() {
@@ -28,10 +28,8 @@ public class BetterTeleOp extends OpMode {
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
         telemetry.setMsTransmissionInterval(11);
-        limelight.pipelineSwitch(0);
-        limelight.start();
+
 
     }
 
@@ -47,21 +45,9 @@ public class BetterTeleOp extends OpMode {
 
         if (gamepad1.right_trigger_pressed) {intake.setPower(1.0);}
         else {intake.setPower(0.0);}
-
-        LLResult result = limelight.getLatestResult();
-
-        if (result != null) {
-
-            if (result.isValid()) {
-
-                telemetry.addData("tx", result.getTx());
-                telemetry.addData("ty", result.getTy());
-
-            }
-
-        }
-
         //intake motor
+
+
         telemetry.addData("Botpose", follower.pose());
         follower.update();
     }
