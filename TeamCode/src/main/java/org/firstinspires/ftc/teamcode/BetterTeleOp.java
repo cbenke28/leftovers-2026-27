@@ -35,9 +35,9 @@ public class BetterTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        follower.manual(
-        //ManualDrive.driveOrHold(
-                //follower,
+        //follower.manual(
+        ManualDrive.driveOrHold(
+                follower,
                 -gamepad1.left_stick_y,
                 -gamepad1.left_stick_x,
                 -gamepad1.right_stick_x
