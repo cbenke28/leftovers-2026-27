@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 import java.util.List;
 
-//@Disabled
+
 @Autonomous(name = "limelightTest", group = "Autonomous")
 public class limelightTest extends basicauton {
 
