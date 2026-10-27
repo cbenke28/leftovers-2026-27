@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
-@Disabled
+//@Disabled
 @TeleOp(name="teleop", group="LinearOpmode")
 public class BasicTeleop extends LinearOpMode {
 
