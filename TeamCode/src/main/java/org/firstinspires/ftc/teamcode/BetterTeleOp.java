@@ -15,23 +15,21 @@ public class BetterTeleOp extends OpMode {
     private DcMotor intake;
 
     private double targetHeading = 0.0;
-    private boolean isHoldingHeading = false;
+    private boolean holdingHeading = false;
 
-    // Toggle Variables for Left Bumper
-    private boolean headingLockEnabled = true;  // Starts enabled by default
+    private boolean headingLockEnabled = true;
     private boolean lastLeftBumper = false;
 
-    // Tuning Constants
     private static final double HEADING_P = 2.0;
     private static final double DEADBAND = 0.02;
     private static final double TURN_DEADZONE = 0.05;
 
-    // Target coordinates for Left Trigger (Center of field: X = 72, Y = 72)
     private static final double TARGET_X = 72.0;
     private static final double TARGET_Y = 72.0;
 
     @Override
     public void init() {
+
         follower = Constants.create(hardwareMap);
 
         intake = hardwareMap.get(DcMotor.class, "intake");
@@ -42,17 +40,24 @@ public class BetterTeleOp extends OpMode {
 
     @Override
     public void start() {
+
         targetHeading = follower.pose().heading();
+
     }
 
     @Override
     public void loop() {
-        // 1. Toggle heading lock on/off with Left Bumper (Rising-edge detection)
+
         if (gamepad1.left_bumper && !lastLeftBumper) {
+
             headingLockEnabled = !headingLockEnabled;
+
             if (headingLockEnabled) {
+
                 targetHeading = follower.pose().heading();
+
             }
+
         }
         lastLeftBumper = gamepad1.left_bumper;
 
@@ -62,14 +67,15 @@ public class BetterTeleOp extends OpMode {
 
         double turnPower;
 
-        // 2. Check if Left Trigger is held down to face the target position
+
         boolean facingTarget = gamepad1.left_trigger > 0.1;
 
         if (facingTarget) {
+
             double currentX = follower.pose().x();
             double currentY = follower.pose().y();
 
-            // Correct atan2 syntax: Math.atan2(y_diff, x_diff)
+
             double deltaX = TARGET_X - currentX;
             double deltaY = TARGET_Y - currentY;
             targetHeading = Math.atan2(deltaY, deltaX);
@@ -78,58 +84,86 @@ public class BetterTeleOp extends OpMode {
             double error = normalizeAngle(targetHeading - currentHeading);
 
             if (Math.abs(error) < DEADBAND) {
+
                 turnPower = 0.0;
-            } else {
+
+            }
+
+            else {
+
                 turnPower = error * HEADING_P;
                 turnPower = Math.max(-1.0, Math.min(1.0, turnPower));
+
             }
-            isHoldingHeading = false;
+
+            holdingHeading = false;
+
         }
-        // 3. If heading lock is turned OFF OR driver is actively turning manually with right stick
+
         else if (!headingLockEnabled || Math.abs(turnInput) > TURN_DEADZONE) {
+
             turnPower = turnInput;
             targetHeading = follower.pose().heading();
-            isHoldingHeading = false;
+            holdingHeading = false;
+
         }
-        // 4. Standard Heading Lock (Right stick neutral & lock enabled)
+
         else {
-            if (!isHoldingHeading) {
+
+            if (!holdingHeading) {
+
                 targetHeading = follower.pose().heading();
-                isHoldingHeading = true;
+                holdingHeading = true;
+
             }
 
             double currentHeading = follower.pose().heading();
             double error = normalizeAngle(targetHeading - currentHeading);
 
             if (Math.abs(error) < DEADBAND) {
+
                 turnPower = 0.0;
-            } else {
+
+            }
+
+            else {
+
                 turnPower = error * HEADING_P;
                 turnPower = Math.max(-1.0, Math.min(1.0, turnPower));
+
             }
+
         }
 
         follower.manual(forward, strafe, turnPower);
 
-        // Intake control
         if (gamepad1.right_trigger > 0.1) {
+
             intake.setPower(1.0);
-        } else {
-            intake.setPower(0.0);
+
         }
 
-        // Telemetry for debugging
+        else {
+
+            intake.setPower(0.0);
+
+        }
+
         telemetry.addData("Facing Target (Left Trigger)", facingTarget);
         telemetry.addData("Heading Lock", headingLockEnabled ? "ENABLED" : "DISABLED");
         telemetry.addData("Target Heading (deg)", Math.toDegrees(targetHeading));
         telemetry.addData("Current Heading (deg)", Math.toDegrees(follower.pose().heading()));
         telemetry.addData("Turn Power", turnPower);
         follower.update();
+
     }
 
     private double normalizeAngle(double angle) {
+
         while (angle > Math.PI) angle -= 2 * Math.PI;
         while (angle < -Math.PI) angle += 2 * Math.PI;
         return angle;
+
     }
+
 }
