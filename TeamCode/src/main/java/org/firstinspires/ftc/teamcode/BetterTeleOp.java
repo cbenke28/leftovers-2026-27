@@ -26,8 +26,7 @@ public class BetterTeleOp extends OpMode {
     private static final double DEADBAND = 0.02;
     private static final double TURN_DEADZONE = 0.05;
 
-    // Target coordinates for Left Trigger
-    // (If your blue hive is at a specific spot, update these X and Y inches!)
+    // Target coordinates for Left Trigger (Center of field: X = 72, Y = 72)
     private static final double TARGET_X = 72.0;
     private static final double TARGET_Y = 72.0;
 
@@ -67,12 +66,13 @@ public class BetterTeleOp extends OpMode {
         boolean facingTarget = gamepad1.left_trigger > 0.1;
 
         if (facingTarget) {
-            // Dynamically calculate angle from current bot position to target coordinates
             double currentX = follower.pose().x();
             double currentY = follower.pose().y();
 
-            // FIXED: Using (TARGET - current) so it points toward the target instead of away
-            targetHeading = Math.atan2(TARGET_Y - currentY, TARGET_X - currentX);
+            // Correct atan2 syntax: Math.atan2(y_diff, x_diff)
+            double deltaX = TARGET_X - currentX;
+            double deltaY = TARGET_Y - currentY;
+            targetHeading = Math.atan2(deltaY, deltaX);
 
             double currentHeading = follower.pose().heading();
             double error = normalizeAngle(targetHeading - currentHeading);
@@ -83,7 +83,7 @@ public class BetterTeleOp extends OpMode {
                 turnPower = error * HEADING_P;
                 turnPower = Math.max(-1.0, Math.min(1.0, turnPower));
             }
-            isHoldingHeading = false; // Reset state so standard lock catches cleanly when released
+            isHoldingHeading = false;
         }
         // 3. If heading lock is turned OFF OR driver is actively turning manually with right stick
         else if (!headingLockEnabled || Math.abs(turnInput) > TURN_DEADZONE) {
