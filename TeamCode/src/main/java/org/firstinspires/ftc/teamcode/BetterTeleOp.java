@@ -23,8 +23,8 @@ public class BetterTeleOp extends OpMode {
     private static final double allowable = 0.02;
     private static final double deadzoneTurn = 0.05;
 
-    private static final double hiveX = 72.0;
-    private static final double hiveY = 72.0;
+    private static final double hiveX = 42.0;
+    private static final double hiveY = 48.0;
 
     @Override
     public void init() {
