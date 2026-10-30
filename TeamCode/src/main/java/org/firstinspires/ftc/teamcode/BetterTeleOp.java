@@ -16,15 +16,12 @@ public class BetterTeleOp extends OpMode {
     private double targetHeading = 0.0;
     private boolean holdingHeading = false;
 
-    private boolean headingLockEnabled = true;
-    private boolean lastLeftBumper = false;
-
     private static final double correctionPower = 2.0;
     private static final double allowable = 0.02;
     private static final double deadzoneTurn = 0.05;
 
-    private static final double hiveX = 42.0;
-    private static final double hiveY = 48.0;
+    private static final double hiveX = 72.0;
+    private static final double hiveY = 72.0;
 
     @Override
     public void init() {
@@ -38,14 +35,6 @@ public class BetterTeleOp extends OpMode {
 
     @Override
     public void loop() {
-
-        if (gamepad1.left_bumper && !lastLeftBumper) {
-            headingLockEnabled = !headingLockEnabled;
-
-            if (headingLockEnabled) {targetHeading = follower.pose().heading();}
-        }
-        lastLeftBumper = gamepad1.left_bumper;
-
         double turnPower;
         double forward = -gamepad1.left_stick_y;
         double strafe = -gamepad1.left_stick_x;
@@ -56,30 +45,28 @@ public class BetterTeleOp extends OpMode {
             double currentX = follower.pose().x();
             double currentY = follower.pose().y();
 
-
             double dx = hiveX - currentX;
             double dy = hiveY - currentY;
+
             targetHeading = Math.atan2(dy, dx);
 
             double currentHeading = follower.pose().heading();
             double error = normalizeAngle(targetHeading - currentHeading);
 
-            if (Math.abs(error) < allowable) {turnPower = 0.0;}
-
-            else {
+            if (Math.abs(error) < allowable) {
+                turnPower = 0.0;
+            } else {
                 turnPower = error * correctionPower;
                 turnPower = Math.max(-1.0, Math.min(1.0, turnPower));
             }
             holdingHeading = false;
         }
-
-        else if (!headingLockEnabled || Math.abs(turnInput) > deadzoneTurn) {
-
+        else if (Math.abs(turnInput) > deadzoneTurn) {
             turnPower = turnInput;
             targetHeading = follower.pose().heading();
             holdingHeading = false;
-        } else {
-
+        }
+        else {
             if (!holdingHeading) {
                 targetHeading = follower.pose().heading();
                 holdingHeading = true;
@@ -88,9 +75,9 @@ public class BetterTeleOp extends OpMode {
             double currentHeading = follower.pose().heading();
             double error = normalizeAngle(targetHeading - currentHeading);
 
-            if (Math.abs(error) < allowable) {turnPower = 0.0;}
-
-            else {
+            if (Math.abs(error) < allowable) {
+                turnPower = 0.0;
+            } else {
                 turnPower = error * correctionPower;
                 turnPower = Math.max(-1.0, Math.min(1.0, turnPower));
             }
@@ -99,10 +86,11 @@ public class BetterTeleOp extends OpMode {
         follower.manual(forward, strafe, turnPower);
 
         telemetry.addData("Facing Target (Left Trigger)", facingTarget);
-        telemetry.addData("Heading Lock", headingLockEnabled ? "ENABLED" : "DISABLED");
         telemetry.addData("Target Heading (deg)", Math.toDegrees(targetHeading));
         telemetry.addData("Current Heading (deg)", Math.toDegrees(follower.pose().heading()));
         telemetry.addData("Turn Power", turnPower);
+        telemetry.addData("X", follower.pose().x());
+        telemetry.addData("Y", follower.pose().y());
         follower.update();
     }
 
