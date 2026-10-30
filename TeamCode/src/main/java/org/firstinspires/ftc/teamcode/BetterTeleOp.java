@@ -41,6 +41,13 @@ public class BetterTeleOp extends OpMode {
         double turnInput = -gamepad1.right_stick_x;
         boolean facingTarget = gamepad1.left_trigger > 0.1;
 
+        if (gamepad1.a){
+            follower.setX(0);
+            follower.setY(0);
+            follower.setHeading(0);
+            targetHeading = 0.0;
+        }
+
         if (facingTarget) {
             double currentX = follower.pose().x();
             double currentY = follower.pose().y();
