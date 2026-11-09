@@ -16,11 +16,11 @@ public class apriltags extends basicauton {
 
     // Tuning constants
     private static final double KP_TURN = 0.03;      // Turn gain for centering tx
-    private static final double KP_FORWARD = 0.04;   // Forward gain for distance/ty
+    private static final double KP_FORWARD = 0.04;    // Forward gain for distance/ty
     private static final double TARGET_TY = -5.0;    // Desired vertical angle at shooting distance (adjust as needed)
     private static final double MAX_SPEED = 0.4;       // Speed safety cap
 
-    private static final int DESIRED_TAG_ID = 1;     // Set your target AprilTag ID (e.g., the hive tag)
+    private static final int DESIRED_TAG_ID = 32;     // Set your target AprilTag ID (e.g., the hive tag)
     private static final int APRIL_TAG_PIPELINE = 1; // Index of your AprilTag pipeline on the Limelight web UI
 
     @Override
