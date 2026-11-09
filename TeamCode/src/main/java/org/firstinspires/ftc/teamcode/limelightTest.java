@@ -17,8 +17,7 @@ public class limelightTest extends basicauton {
     private int activePipeline = 0;
 
     private static final double KP_TURN = -0.03;
-    private static final double KP_FORWARD = 0.04;
-    private static final double TARGET_TY = 0.0;
+    private static final double APPROACH_SPEED = 0.35; // Constant forward drive speed toward pollen/ball
     private static final double MIN_AREA_THRESHOLD = 0.01;
     private static final double MAX_DRIVE_SPEED = 0.5;
 
@@ -27,7 +26,10 @@ public class limelightTest extends basicauton {
     private double smoothTurn = 0.0;
     private static final double SMOOTHING_FACTOR = 0.3; // Lower = smoother, Higher = more responsive
     private static final double DEADBAND_TX = 1.0; // degrees deadband for turning
-    private static final double DEADBAND_TY = 0.5; // degrees deadband for forward
+
+    // Auto-cycling pipeline variables
+    private double lastPipelineSwitchTime = 0.0;
+    private static final double PIPELINE_SWITCH_INTERVAL = 0.25; // Switch every 250ms when searching
 
     public static class TargetData {
         public boolean found = false;
@@ -75,17 +77,26 @@ public class limelightTest extends basicauton {
 
         if (isStopRequested()) return;
 
+        lastPipelineSwitchTime = getRuntime();
+
         // Autonomous loop
         while (opModeIsActive() && !isStopRequested()) {
             TargetData target = extractTarget(limelight.getLatestResult());
-            double[] control = computeSmoothedControl(target);
 
-            if (target.found) {
-                telemetry.addData("Tracking", "%s (tx: %.2f, ty: %.2f)", target.source, target.tx, target.ty);
+            // If no target is found, cycle through pipelines 0, 1, 2, 3
+            if (!target.found) {
+                if ((getRuntime() - lastPipelineSwitchTime) > PIPELINE_SWITCH_INTERVAL) {
+                    activePipeline = (activePipeline + 1) % 4; // Cycles through 0, 1, 2, 3
+                    limelight.pipelineSwitch(activePipeline);
+                    lastPipelineSwitchTime = getRuntime();
+                }
+                telemetry.addData("Status", "Searching (Cycling Pipeline %d)...", activePipeline);
             } else {
-                telemetry.addData("Status", "Searching on pipeline %d...", activePipeline);
+                // TARGET FOUND! Lock onto this pipeline and drive forward while steering
+                telemetry.addData("Tracking", "%s on Pipeline %d (tx: %.2f, ty: %.2f)", target.source, activePipeline, target.tx, target.ty);
             }
 
+            double[] control = computeSmoothedControl(target);
             follower.manual(control[0], 0.0, control[1]);
             follower.update();
             telemetry.update();
@@ -99,12 +110,11 @@ public class limelightTest extends basicauton {
         double rawTurn = 0.0;
 
         if (target.found) {
-            rawForward = Math.max(-MAX_DRIVE_SPEED, Math.min(MAX_DRIVE_SPEED, (TARGET_TY - target.ty) * KP_FORWARD));
+            rawForward = APPROACH_SPEED; // Always drive forward toward the pollen/ball
             rawTurn = Math.max(-MAX_DRIVE_SPEED, Math.min(MAX_DRIVE_SPEED, target.tx * KP_TURN));
 
             // Apply deadband to eliminate micro-jitter when centered on the ball
             if (Math.abs(target.tx) < DEADBAND_TX) rawTurn = 0.0;
-            if (Math.abs(TARGET_TY - target.ty) < DEADBAND_TY) rawForward = 0.0;
         }
 
         // Low-pass filter (exponential smoothing) for silky smooth movement
@@ -169,14 +179,25 @@ public class limelightTest extends basicauton {
         limelight.pipelineSwitch(activePipeline);
         limelight.start();
         double start = getRuntime();
+        double lastSwitch = start;
 
         while (opModeIsActive() && (getRuntime() - start) < timeoutSeconds) {
             TargetData target = extractTarget(limelight.getLatestResult());
+
+            if (!target.found) {
+                if ((getRuntime() - lastSwitch) > PIPELINE_SWITCH_INTERVAL) {
+                    activePipeline = (activePipeline + 1) % 4; // Cycles 0, 1, 2, 3
+                    limelight.pipelineSwitch(activePipeline);
+                    lastSwitch = getRuntime();
+                }
+            }
+
             double[] control = computeSmoothedControl(target);
             follower.manual(control[0], 0.0, control[1]);
             follower.update();
 
-            if (target.found && Math.abs(target.tx) < 2.0 && Math.abs(TARGET_TY - target.ty) < 2.0) {
+            // Stop when target area (ta) is large enough (close to pickup) or timeout reached
+            if (target.found && target.ta > 15.0) { // adjust area threshold as needed for pickup
                 follower.manual(0, 0, 0);
                 follower.update();
                 return true;
