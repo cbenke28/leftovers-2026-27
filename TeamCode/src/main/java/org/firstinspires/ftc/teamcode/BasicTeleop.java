@@ -34,9 +34,10 @@ public class BasicTeleop extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x * 1.1;
-            double rx = gamepad1.right_stick_x;
+            double deadzoneStick = 0.05;
+            double y = Math.abs(gamepad1.left_stick_y) > deadzoneStick ? -gamepad1.left_stick_y : 0.0;
+            double x = Math.abs(gamepad1.left_stick_x) > deadzoneStick ? gamepad1.left_stick_x * 1.1 : 0.0;
+            double rx = Math.abs(gamepad1.right_stick_x) > deadzoneStick ? gamepad1.right_stick_x : 0.0;
 
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1.0);

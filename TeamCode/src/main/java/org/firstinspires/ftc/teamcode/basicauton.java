@@ -15,10 +15,10 @@ public class basicauton extends LinearOpMode {
     protected Follower follower;
 
     private final Pose start = new Pose(0, 0, Math.toRadians(0));
-    private final Pose point1 = new Pose(0, 30, Math.toRadians(0));
-    private final Pose point2 = new Pose(-20, 30, Math.toRadians(0));
-    private final Pose point3 = new Pose(20, 30, Math.toRadians(0));
-    private final Pose point4 = new Pose(0, 30, Math.toRadians(0));
+    private final Pose point1 = new Pose(30, 0, Math.toRadians(0));
+    private final Pose point2 = new Pose(30, 20, Math.toRadians(0));
+    private final Pose point3 = new Pose(30, -20, Math.toRadians(0));
+    private final Pose point4 = new Pose(30, 0, Math.toRadians(0));
     private final Pose point5 = new Pose(0, 0, Math.toRadians(0));
 
     private Path path1;
