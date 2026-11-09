@@ -38,8 +38,9 @@ public class BetterTeleOp extends OpMode {
     @Override
     public void loop() {
         double turnPower;
-        double forward = -gamepad1.left_stick_y;
-        double strafe = -gamepad1.left_stick_x;
+        double deadzoneStick = 0.05;
+        double forward = Math.abs(gamepad1.left_stick_y) > deadzoneStick ? -gamepad1.left_stick_y : 0.0;
+        double strafe = Math.abs(gamepad1.left_stick_x) > deadzoneStick ? -gamepad1.left_stick_x : 0.0;
         double turnInput = -gamepad1.right_stick_x;
         boolean facingTarget = gamepad1.left_trigger > 0.1;
 
