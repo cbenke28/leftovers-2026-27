@@ -23,6 +23,7 @@ public class BetterTeleOp extends OpMode {
 
     private static final double hiveX = 64.3;
     private static final double hiveY = 58.8;
+    private static final double servoOffset = Math.toRadians(80.0);
 
     @Override
     public void init() {
@@ -56,8 +57,9 @@ public class BetterTeleOp extends OpMode {
         double currentHeading = follower.pose().heading();
 
         double hiveAngle = Math.atan2(hiveY - currentY, hiveX - currentX);
-        double relativeAngle = normalizeAngle(hiveAngle - currentHeading);
+        double relativeAngle = normalizeAngle((hiveAngle - currentHeading) - servoOffset);
         double servoPosition = 0.5 + (relativeAngle / Math.PI);
+
         servoPosition = Range.clip(servoPosition, 0.0, 1.0);
         pointer.setPosition(servoPosition);
 
