@@ -31,10 +31,10 @@ public class finnshooter extends LinearOpMode {
         s2 = hardwareMap.get(Servo.class, "hood2");
         pivot = hardwareMap.get(Servo.class, "rotator");
 
-        m1.setDirection(DcMotorSimple.Direction.FORWARD);
-        m2.setDirection(DcMotorSimple.Direction.REVERSE);
-        s1.setDirection(Servo.Direction.FORWARD);
-        s2.setDirection(Servo.Direction.REVERSE);
+        m1.setDirection(DcMotorSimple.Direction.REVERSE);
+        m2.setDirection(DcMotorSimple.Direction.FORWARD);
+        s1.setDirection(Servo.Direction.REVERSE);
+        s2.setDirection(Servo.Direction.FORWARD);
 
         power = 0.3;
         angle = 0.0;
@@ -53,10 +53,10 @@ public class finnshooter extends LinearOpMode {
             if (mode.equals("motor")){
 
                 if (gamepad1.leftBumperWasPressed()) {
-                    power -= 0.005;
+                    power -= 0.01;
                 }
                 if (gamepad1.rightBumperWasPressed()){
-                    power += 0.005;
+                    power += 0.01;
                 }
 
                 power = Range.clip(power, 0.0, 1.0);
@@ -64,20 +64,18 @@ public class finnshooter extends LinearOpMode {
             } else if (mode.equals("angle")){
 
                 if (gamepad1.leftBumperWasPressed()) {
-                    angle -= 0.005;
+                    angle -= 20;
                 }
                 if (gamepad1.rightBumperWasPressed()){
-                    angle += 0.005;
+                    angle += 20;
                 }
-
-                angle = Range.clip(angle, 0.0, 1.0);
 
             }
 
             m1.setPower(power);
             m2.setPower(power);
-            s1.setPosition(angle);
-            s2.setPosition(angle);
+            s1.setPosition(servoNormalizer(angle));
+            s2.setPosition(servoNormalizer(angle));
 
             telemetry.addData("Mode", mode);
             telemetry.addData("Power", power);
@@ -85,4 +83,12 @@ public class finnshooter extends LinearOpMode {
             telemetry.update();
         }
     }
+
+    private double servoNormalizer(double angle) {
+
+        double clippedAngle = Range.clip(angle, 0.0, 300.0);
+        return clippedAngle / 300.0;
+
+    }
+
 }
