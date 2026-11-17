@@ -36,7 +36,7 @@ public class finnshooter extends LinearOpMode {
         s1.setDirection(Servo.Direction.REVERSE);
         s2.setDirection(Servo.Direction.FORWARD);
 
-        power = 0.3;
+        power = 0.0;
         angle = 0.0;
         heading = 0.0;
 
@@ -53,10 +53,10 @@ public class finnshooter extends LinearOpMode {
             if (mode.equals("motor")){
 
                 if (gamepad1.leftBumperWasPressed()) {
-                    power -= 0.01;
+                    power -= 0.05;
                 }
                 if (gamepad1.rightBumperWasPressed()){
-                    power += 0.01;
+                    power += 0.05;
                 }
 
                 power = Range.clip(power, 0.0, 1.0);
@@ -64,10 +64,10 @@ public class finnshooter extends LinearOpMode {
             } else if (mode.equals("angle")){
 
                 if (gamepad1.leftBumperWasPressed()) {
-                    angle -= 20;
+                    angle -= 5;
                 }
                 if (gamepad1.rightBumperWasPressed()){
-                    angle += 20;
+                    angle += 5;
                 }
 
             }
