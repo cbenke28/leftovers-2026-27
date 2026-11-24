@@ -9,21 +9,21 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name = "rotator", group = "LinearOpMode")
 public class rotator extends LinearOpMode {
 
-    private Servo rotatorServo;
+    private Servo rotator;
 
-    // Servo position range: 0.0 to 1.0 (default 0.5 centered)
+
     private double servoPosition = 0.5;
 
-    // Max rotation step per cycle for smooth motion
+
     private static final double MAX_STEP_RATE = 0.005;
 
     @Override
     public void runOpMode() {
-        // Retrieve rotator servo from hardware map
-        rotatorServo = hardwareMap.get(Servo.class, "rotator");
 
-        // Set initial position
-        rotatorServo.setPosition(servoPosition);
+        rotator = hardwareMap.get(Servo.class, "rotator");
+
+
+        rotator.setPosition(servoPosition);
 
         telemetry.addData("Status", "Initialized - Rotator Ready");
         telemetry.addData("Initial Servo Position", servoPosition);
@@ -41,12 +41,12 @@ public class rotator extends LinearOpMode {
 
             // Trigger controls
             if (rightTrigger > 0.05) {
-                // Hold Right Trigger -> Turn Servo RIGHT (increase position)
+
                 servoPosition += MAX_STEP_RATE * rightTrigger;
                 servoMovement = "Turning RIGHT (CW)";
                 shooterMovement = "Turning LEFT (CCW)";
             } else if (leftTrigger > 0.05) {
-                // Hold Left Trigger -> Turn Servo LEFT (decrease position)
+
                 servoPosition -= MAX_STEP_RATE * leftTrigger;
                 servoMovement = "Turning LEFT (CCW)";
                 shooterMovement = "Turning RIGHT (CW)";
@@ -56,7 +56,7 @@ public class rotator extends LinearOpMode {
             servoPosition = Range.clip(servoPosition, 0.0, 1.0);
 
             // Update servo hardware position
-            rotatorServo.setPosition(servoPosition);
+            rotator.setPosition(servoPosition);
 
             // Calculate opposite gear (shooter horizontal angle) position
             double shooterGearPosition = 1.0 - servoPosition;
